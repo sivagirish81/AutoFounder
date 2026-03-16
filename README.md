@@ -46,7 +46,6 @@ Steps:
 2. Set the project root to `generated-app/` in Vercel.
 3. Create a Deploy Hook for that project and set it as `VERCEL_GENERATED_DEPLOY_HOOK_URL`.
 4. Set `VERCEL_GENERATED_CANONICAL_URL` to the production URL for the generated site.
-
 ## Architecture
 - `app/`: Next.js UI and API routes
 - `components/`: dashboard UI components
@@ -59,9 +58,8 @@ Steps:
 - `types/`: shared types
 
 ## TODOs For Real Integrations
-- Replace `lib/models/nemotron.ts` with actual Nemotron API calls.
-- Replace `lib/v0/client.ts` with a real v0 generation request.
-- Replace `lib/deploy/vercel.ts` with actual Vercel deployment logic.
+- Confirm production API keys and deploy hooks are set in the Vercel environment.
+- Swap deploy hook flow to full Vercel REST deploys if you want per-deploy URLs.
 
 ## License
 MIT

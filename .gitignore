@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+generated-app/node_modules/
 
 # testing
 /coverage
@@ -11,6 +12,7 @@
 # next.js
 /.next/
 /out/
+generated-app/.next/
 
 # production
 /build
@@ -27,6 +29,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+data/state.json
 
 # vercel
 .vercel

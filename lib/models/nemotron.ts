@@ -171,7 +171,13 @@ export async function nemotronCritic(_idea: string, iteration: number): Promise<
     credibility: Math.min(15, 8 + iteration * 1.2),
     total: Math.min(
       100,
-      Math.round(Math.min(25, 14 + iteration * 2) + Math.min(20, 12 + iteration * 1.5) + Math.min(20, 11 + iteration * 1.8) + Math.min(20, 10 + iteration * 1.7) + Math.min(15, 8 + iteration * 1.2))
+      Math.round(
+        Math.min(25, 14 + iteration * 2) +
+          Math.min(20, 12 + iteration * 1.5) +
+          Math.min(20, 11 + iteration * 1.8) +
+          Math.min(20, 10 + iteration * 1.7) +
+          Math.min(15, 8 + iteration * 1.2)
+      )
     )
   };
   const fallbackNotes: CriticNotes = {
@@ -232,19 +238,19 @@ export async function nemotronOptimizer(notes: CriticNotes): Promise<string[]> {
 }
 
 export async function nemotronStopAgent(score: CriticScore, iteration: number): Promise<StopDecision> {
-  const fallback: StopDecision = score.total >= 85
-    ? { decision: "SHIP", reason: "Score threshold reached with strong conversion and polish." }
-    : iteration >= 5
-      ? { decision: "SHIP", reason: "Max iterations reached; further gains likely marginal." }
-      : { decision: "CONTINUE", reason: "Quality improving; continue refining." };
+  const fallback: StopDecision =
+    score.total >= 85
+      ? { decision: "SHIP", reason: "Score threshold reached with strong conversion and polish." }
+      : iteration >= 5
+        ? { decision: "SHIP", reason: "Max iterations reached; further gains likely marginal." }
+        : { decision: "CONTINUE", reason: "Quality improving; continue refining." };
 
   try {
     const content = await callNemotron(
       [
         {
           role: "system",
-          content:
-            "You are a Stop Agent. Return JSON only with keys: decision (CONTINUE or SHIP) and reason."
+          content: "You are a Stop Agent. Return JSON only with keys: decision (CONTINUE or SHIP) and reason."
         },
         { role: "user", content: JSON.stringify({ score, iteration }) }
       ],

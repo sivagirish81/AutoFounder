@@ -39,7 +39,6 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Builder", "Writing generated output into generated-app."));
   persistGeneratedSite(v0Output.code);
-
   events.push(event("Deploy Agent", "Deploying iteration to Vercel."));
   const deployment = await deployToVercel(iterationNumber);
 

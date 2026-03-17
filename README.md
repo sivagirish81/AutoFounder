@@ -38,6 +38,19 @@ Recommended for deployments:
 - `VERCEL_GENERATED_DEPLOY_HOOK_URL` (deploy hook tied to the generated-site Vercel project)
 - `VERCEL_GENERATED_CANONICAL_URL` (the stable live URL shown in the dashboard)
 
+## GitHub Action Publishing (Free Option)
+AutoFounder can dispatch a GitHub Action to write v0 output into `generated-app/app/page.tsx`, commit, and push.
+
+Setup:
+1. Create a GitHub personal access token with `repo` scope.
+2. Add these env vars (locally + in Vercel):
+   - `GITHUB_OWNER` (e.g., `sivagirish81`)
+   - `GITHUB_REPO` (e.g., `AutoFounder`)
+   - `GITHUB_DISPATCH_TOKEN` (PAT)
+3. Ensure GitHub Actions are enabled for the repo.
+
+The workflow lives in `.github/workflows/publish-generated.yml`.
+
 ## Two-Project Setup (Option B)
 AutoFounder now writes v0 output into `generated-app/` and triggers a deploy hook for that folder.
 

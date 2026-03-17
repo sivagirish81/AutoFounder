@@ -7,6 +7,7 @@ import { runStopAgent } from "@/lib/agents/stopAgent";
 import { runStrategist } from "@/lib/agents/strategist";
 import { runUXAgent } from "@/lib/agents/uxAgent";
 import { deployToVercel } from "@/lib/deploy/vercel";
+import { publishGeneratedSite } from "@/lib/github/publish";
 import { persistGeneratedSite } from "@/lib/v0/persist";
 import type { AgentEvent, IterationRecord, OrchestratorState } from "@/types/iteration";
 
@@ -39,6 +40,15 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Builder", "Writing generated output into generated-app."));
   persistGeneratedSite(v0Output.code);
+  events.push(event("Builder", "Dispatching GitHub workflow to publish generated site."));
+  const publishResult = await publishGeneratedSite({
+    code: v0Output.code,
+    idea: state.idea,
+    iteration: iterationNumber
+  });
+  if (!publishResult.ok) {
+    events.push(event("Builder", `Publish skipped: ${publishResult.message}`));
+  }
   events.push(event("Deploy Agent", "Deploying iteration to Vercel."));
   const deployment = await deployToVercel(iterationNumber);
 

@@ -11,6 +11,9 @@ function extractCodeBlock(content: string): string | null {
 }
 
 export function persistGeneratedSite(rawContent: string) {
+  if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
+    return;
+  }
   const extracted = extractCodeBlock(rawContent) ?? rawContent.trim();
   const finalContent = extracted.length
     ? extracted

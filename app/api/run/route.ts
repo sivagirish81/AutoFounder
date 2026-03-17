@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { loadState, resetState, saveState } from "@/lib/orchestrator/state";
 import { runIteration } from "@/lib/orchestrator/runIteration";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   const payload = await request.json().catch(() => ({}));
   const action = payload?.action ?? "run";

@@ -52,6 +52,28 @@ function safeParseJson<T>(content: string): T | null {
   }
 }
 
+function normalizeStringArray(value: unknown, fallback: string[]): string[] {
+  if (Array.isArray(value)) {
+    const mapped = value.map((item) => {
+      if (typeof item === "string") return item;
+      if (item && typeof item === "object") {
+        const label = (item as { label?: unknown; title?: unknown; name?: unknown }).label
+          ?? (item as { title?: unknown }).title
+          ?? (item as { name?: unknown }).name;
+        if (typeof label === "string") return label;
+        return JSON.stringify(item);
+      }
+      return String(item ?? "");
+    }).filter((item) => item.trim().length > 0);
+    return mapped.length ? mapped : fallback;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed ? [trimmed] : fallback;
+  }
+  return fallback;
+}
+
 export async function nemotronStrategist(idea: string): Promise<ProductBrief> {
   const fallback: ProductBrief = {
     summary: `AutoFounder will build a fast, credible landing page for: ${idea}.`,
@@ -110,7 +132,14 @@ export async function nemotronUXPlan(brief: ProductBrief): Promise<UXPlan> {
       ],
       0.6
     );
-    return safeParseJson<UXPlan>(content) ?? fallback;
+    const parsed = safeParseJson<UXPlan>(content);
+    if (!parsed) return fallback;
+    return {
+      sectionOrder: normalizeStringArray(parsed.sectionOrder, fallback.sectionOrder),
+      uxRationale: parsed.uxRationale ?? fallback.uxRationale,
+      conversionRationale: parsed.conversionRationale ?? fallback.conversionRationale,
+      contentEmphasis: normalizeStringArray(parsed.contentEmphasis, fallback.contentEmphasis)
+    };
   } catch {
     return fallback;
   }

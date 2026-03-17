@@ -206,7 +206,18 @@ export async function nemotronCritic(_idea: string, iteration: number): Promise<
     if (!parsed) {
       return { score: fallbackScore, notes: fallbackNotes };
     }
-    return parsed;
+    const strengths = Array.isArray(parsed.notes?.strengths) ? parsed.notes.strengths : [String(parsed.notes?.strengths ?? "")].filter(Boolean);
+    const weaknesses = Array.isArray(parsed.notes?.weaknesses) ? parsed.notes.weaknesses : [String(parsed.notes?.weaknesses ?? "")].filter(Boolean);
+    const nextChanges = Array.isArray(parsed.notes?.nextChanges) ? parsed.notes.nextChanges : [String(parsed.notes?.nextChanges ?? "")].filter(Boolean);
+    return {
+      score: parsed.score ?? fallbackScore,
+      notes: {
+        strengths: strengths.length ? strengths : fallbackNotes.strengths,
+        weaknesses: weaknesses.length ? weaknesses : fallbackNotes.weaknesses,
+        nextChanges: nextChanges.length ? nextChanges : fallbackNotes.nextChanges,
+        rationale: parsed.notes?.rationale ?? fallbackNotes.rationale
+      }
+    };
   } catch {
     return { score: fallbackScore, notes: fallbackNotes };
   }

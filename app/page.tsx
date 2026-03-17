@@ -95,7 +95,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <p className="text-white/50">Optimizer Notes</p>
-                  <p>{latest.optimizerNotes.join(" ")}</p>
+                  <p>{(Array.isArray(latest.optimizerNotes) ? latest.optimizerNotes : [String(latest.optimizerNotes ?? "")]).join(" ")}</p>
                 </div>
                 <div>
                   <p className="text-white/50">Critic Rationale</p>

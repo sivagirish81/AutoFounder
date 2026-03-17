@@ -23,9 +23,11 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Strategist", "Analyzing startup idea and defining product brief."));
   const strategist = await runStrategist(state.idea);
+  events.push(event("Strategist", `Summary: ${strategist.summary}`));
 
   events.push(event("UX Agent", "Selecting section order and conversion strategy."));
   const uxPlan = await runUXAgent(strategist);
+  events.push(event("UX Agent", `Order: ${uxPlan.sectionOrder.join(" > ")}`));
 
   const previousIteration = state.iterations[state.iterations.length - 1];
   const iterationDelta = previousIteration
@@ -34,6 +36,7 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Prompt Engineer", "Preparing structured v0 prompt."));
   const promptPlan = await runPromptEngineer(state.idea, strategist, uxPlan, iterationDelta);
+  events.push(event("Prompt Engineer", "v0 prompt ready."));
 
   events.push(event("Builder", "Sending prompt to v0 for generation."));
   const v0Output = await runBuilder(promptPlan.prompt);
@@ -54,12 +57,14 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Critic", "Scoring deployed result and capturing feedback."));
   const criticResult = await runCritic(state.idea, iterationNumber);
+  events.push(event("Critic", `Score: ${criticResult.score.total}`));
 
   events.push(event("Optimizer", "Deciding highest-impact improvements."));
   const optimizerNotes = await runOptimizer(criticResult.notes);
 
   events.push(event("Stop Agent", "Evaluating stop conditions."));
   const stopDecision = await runStopAgent(criticResult.score, iterationNumber);
+  events.push(event("Stop Agent", `${stopDecision.decision}: ${stopDecision.reason}`));
 
   return {
     id: randomUUID(),

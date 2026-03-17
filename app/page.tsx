@@ -30,7 +30,11 @@ export default function HomePage() {
 
   async function runIteration() {
     setIsRunning(true);
-    const response = await fetch("/api/run", {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify({ action: \"run\" })\n    });
+    const response = await fetch("/api/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "run" })
+    });
     const data = (await response.json()) as OrchestratorState;
     setState(data);
     setIsRunning(false);
@@ -38,7 +42,11 @@ export default function HomePage() {
 
   async function resetLoop(idea: string) {
     setIsRunning(true);
-    const response = await fetch(\"/api/run\", {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify({ action: \"reset\", idea })\n    });
+    const response = await fetch("/api/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reset", idea })
+    });
     const data = (await response.json()) as OrchestratorState;
     setState(data);
     setIsRunning(false);

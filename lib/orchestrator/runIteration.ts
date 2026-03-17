@@ -7,6 +7,7 @@ import { runStopAgent } from "@/lib/agents/stopAgent";
 import { runStrategist } from "@/lib/agents/strategist";
 import { runUXAgent } from "@/lib/agents/uxAgent";
 import { deployToVercel } from "@/lib/deploy/vercel";
+import { persistGeneratedSite } from "@/lib/v0/persist";
 import type { AgentEvent, IterationRecord, OrchestratorState } from "@/types/iteration";
 
 const now = () => new Date().toISOString();
@@ -35,6 +36,9 @@ export async function runIteration(state: OrchestratorState): Promise<IterationR
 
   events.push(event("Builder", "Sending prompt to v0 for generation."));
   const v0Output = await runBuilder(promptPlan.prompt);
+
+  events.push(event("Builder", "Writing generated output into generated-app."));
+  persistGeneratedSite(v0Output.code);
 
   events.push(event("Deploy Agent", "Deploying iteration to Vercel."));
   const deployment = await deployToVercel(iterationNumber);
